@@ -1,36 +1,37 @@
 package shmup
 
 import (
-	"image/color"
-
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
 const (
 	Title        = "Shmup"
-	ScreenWidth  = 320
-	ScreenHeight = 240
+	ScreenWidth  = 480
+	ScreenHeight = 600
 )
 
 type Game struct {
-	ship *Ship
+	space *Space
+	ship  *Ship
 }
 
 func NewGame() *Game {
-	game := &Game{}
-	game.ship = NewShip()
-	return game
+	g := &Game{}
+	g.space = NewSpace()
+	g.ship = NewShip()
+	return g
 }
 
 func (g *Game) Update() error {
-	// Write your game's logical update.
+	g.ship.Update()
+	updateBullets()
 	return nil
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
-	// Write your game's rendering.
-	screen.Fill(color.White)
+	g.space.Draw(screen)
 	g.ship.Draw(screen)
+	drawBullets(screen)
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
