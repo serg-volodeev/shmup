@@ -11,27 +11,23 @@ const (
 )
 
 type Game struct {
-	space *Space
-	ship  *Ship
+	world *World
 }
 
 func NewGame() *Game {
+	res := loadRes()
 	g := &Game{}
-	g.space = NewSpace()
-	g.ship = NewShip()
+	g.world = newWorld(res)
 	return g
 }
 
 func (g *Game) Update() error {
-	g.ship.Update()
-	updateBullets()
+	g.world.update()
 	return nil
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
-	g.space.Draw(screen)
-	g.ship.Draw(screen)
-	drawBullets(screen)
+	g.world.draw(screen)
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {

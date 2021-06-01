@@ -9,13 +9,13 @@ type Space struct {
 	options *ebiten.DrawImageOptions
 }
 
-func NewSpace() *Space {
-	space := &Space{}
-	space.image, _ = LoadImageFromFile("./assets/images/starfield.png")
-	space.options = &ebiten.DrawImageOptions{}
-	return space
+func newSpace(res *Res) *Space {
+	s := &Space{}
+	s.image = res.images["space"]
+	s.options = &ebiten.DrawImageOptions{}
+	return s
 }
 
-func (space *Space) Draw(screen *ebiten.Image) {
-	screen.DrawImage(space.image, space.options)
+func (s *Space) draw(screen *ebiten.Image) {
+	screen.DrawImage(s.image, s.options)
 }

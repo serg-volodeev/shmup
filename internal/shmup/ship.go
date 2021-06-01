@@ -2,7 +2,6 @@ package shmup
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
 type Ship struct {
@@ -12,44 +11,35 @@ type Ship struct {
 	speedX  float64
 }
 
-func NewShip() *Ship {
-	ship := &Ship{}
-	ship.image, _ = LoadImageFromFile("./assets/images/playerShip1_orange.png")
-	ship.x = float64(ScreenWidth)/2 - ship.width()/2
-	ship.y = float64(ScreenHeight) - ship.height() - 10
-	ship.options = &ebiten.DrawImageOptions{}
-	ship.speedX = 4
-	return ship
+func newShip(res *Res) *Ship {
+	sh := &Ship{}
+	sh.image = res.images["ship"]
+	sh.x = float64(ScreenWidth)/2 - sh.width()/2
+	sh.y = float64(ScreenHeight) - sh.height() - 10
+	sh.options = &ebiten.DrawImageOptions{}
+	sh.speedX = 4
+	return sh
 }
 
-func (ship *Ship) width() float64 {
-	return float64(ship.image.Bounds().Dx())
+func (sh *Ship) width() float64 {
+	return float64(sh.image.Bounds().Dx())
 }
 
-func (ship *Ship) height() float64 {
-	return float64(ship.image.Bounds().Dy())
+func (sh *Ship) height() float64 {
+	return float64(sh.image.Bounds().Dy())
 }
 
-func (ship *Ship) Draw(screen *ebiten.Image) {
-	ship.options.GeoM.Reset()
-	ship.options.GeoM.Translate(ship.x, ship.y)
-	screen.DrawImage(ship.image, ship.options)
+func (sh *Ship) draw(screen *ebiten.Image) {
+	sh.options.GeoM.Reset()
+	sh.options.GeoM.Translate(sh.x, sh.y)
+	screen.DrawImage(sh.image, sh.options)
 }
 
-func (ship *Ship) Update() {
-	if ebiten.IsKeyPressed(ebiten.KeyArrowRight) && (ship.x+ship.width()) < ScreenWidth {
-		ship.x += ship.speedX
+func (sh *Ship) update() {
+	if ebiten.IsKeyPressed(ebiten.KeyArrowRight) && (sh.x+sh.width()) < ScreenWidth {
+		sh.x += sh.speedX
 	}
-	if ebiten.IsKeyPressed(ebiten.KeyArrowLeft) && ship.x > 0 {
-		ship.x -= ship.speedX
+	if ebiten.IsKeyPressed(ebiten.KeyArrowLeft) && sh.x > 0 {
+		sh.x -= sh.speedX
 	}
-	if inpututil.IsKeyJustPressed(ebiten.KeySpace) {
-		ship.fire()
-	}
-}
-
-func (ship *Ship) fire() {
-	b := NewBullet()
-	b.x = ship.x + ship.width()/2 - b.width()/2
-	b.y = ScreenHeight - ship.height() - 10 - b.height()
 }
