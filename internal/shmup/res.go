@@ -18,6 +18,10 @@ func loadRes() *Res {
 	r.images["bullet"] = loadImageFromFile("./assets/images/laserRed16.png")
 	r.images["ship"] = loadImageFromFile("./assets/images/playerShip1_orange.png")
 	r.images["space"] = loadImageFromFile("./assets/images/starfield.png")
+	r.images["meteor1"] = loadImageFromFile("./assets/images/meteorBrown_big1.png")
+	r.images["meteor2"] = loadImageFromFile("./assets/images/meteorBrown_med1.png")
+	r.images["meteor3"] = loadImageFromFile("./assets/images/meteorBrown_small1.png")
+	r.images["meteor4"] = loadImageFromFile("./assets/images/meteorBrown_tiny1.png")
 	return r
 }
 

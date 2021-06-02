@@ -9,6 +9,7 @@ type World struct {
 	space   *Space
 	ship    *Ship
 	bullets *Bullets
+	meteors *Meteors
 }
 
 func newWorld(res *Res) *World {
@@ -17,16 +18,19 @@ func newWorld(res *Res) *World {
 	w.space = newSpace(res)
 	w.ship = newShip(res, w)
 	w.bullets = newBullets(res)
+	w.meteors = newMeteors(res, w)
 	return w
 }
 
 func (w *World) update() {
 	w.ship.update(w)
 	w.bullets.update(w)
+	w.meteors.update(w)
 }
 
 func (w *World) draw(screen *ebiten.Image) {
 	w.space.draw(screen)
 	w.ship.draw(screen)
 	w.bullets.draw(screen)
+	w.meteors.draw(screen)
 }
