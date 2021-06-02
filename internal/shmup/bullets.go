@@ -16,9 +16,9 @@ func newBullets(res *Res) *Bullets {
 	return b
 }
 
-func (b *Bullets) update() {
+func (b *Bullets) update(world *World) {
 	for i := range b.items {
-		b.items[i].update()
+		b.items[i].update(world)
 	}
 }
 

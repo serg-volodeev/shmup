@@ -5,9 +5,9 @@ import (
 )
 
 type Bullet struct {
+	rect    *Rect
 	image   *ebiten.Image
 	options *ebiten.DrawImageOptions
-	x, y    float64
 	speedY  float64
 	visible bool
 }
@@ -18,15 +18,8 @@ func newBullet(res *Res) *Bullet {
 	b.options = &ebiten.DrawImageOptions{}
 	b.speedY = -8
 	b.visible = true
+	b.rect = newRectFromImage(b.image)
 	return b
-}
-
-func (b *Bullet) width() float64 {
-	return float64(b.image.Bounds().Dx())
-}
-
-func (b *Bullet) height() float64 {
-	return float64(b.image.Bounds().Dy())
 }
 
 func (b *Bullet) draw(screen *ebiten.Image) {
@@ -34,16 +27,16 @@ func (b *Bullet) draw(screen *ebiten.Image) {
 		return
 	}
 	b.options.GeoM.Reset()
-	b.options.GeoM.Translate(b.x, b.y)
+	b.options.GeoM.Translate(b.rect.x, b.rect.y)
 	screen.DrawImage(b.image, b.options)
 }
 
-func (b *Bullet) update() {
+func (b *Bullet) update(world *World) {
 	if !b.visible {
 		return
 	}
-	b.y += b.speedY
-	if b.y+b.height() < 0 {
+	b.rect.moveY(b.speedY)
+	if b.rect.bottom() < world.rect.top() {
 		b.visible = false
 	}
 }

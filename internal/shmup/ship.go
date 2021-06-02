@@ -2,44 +2,54 @@ package shmup
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
 type Ship struct {
+	rect    *Rect
 	image   *ebiten.Image
 	options *ebiten.DrawImageOptions
-	x, y    float64
 	speedX  float64
 }
 
-func newShip(res *Res) *Ship {
-	sh := &Ship{}
-	sh.image = res.images["ship"]
-	sh.x = float64(ScreenWidth)/2 - sh.width()/2
-	sh.y = float64(ScreenHeight) - sh.height() - 10
-	sh.options = &ebiten.DrawImageOptions{}
-	sh.speedX = 4
-	return sh
+func newShip(res *Res, world *World) *Ship {
+	s := &Ship{}
+	s.image = res.images["ship"]
+	s.options = &ebiten.DrawImageOptions{}
+	s.speedX = 4
+
+	s.rect = newRectFromImage(s.image)
+	s.rect.setCenterX(world.rect.centerX())
+	s.rect.setBottom(world.rect.bottom() - 10)
+	return s
 }
 
-func (sh *Ship) width() float64 {
-	return float64(sh.image.Bounds().Dx())
+func (s *Ship) draw(screen *ebiten.Image) {
+	s.options.GeoM.Reset()
+	s.options.GeoM.Translate(s.rect.x, s.rect.y)
+	screen.DrawImage(s.image, s.options)
 }
 
-func (sh *Ship) height() float64 {
-	return float64(sh.image.Bounds().Dy())
-}
-
-func (sh *Ship) draw(screen *ebiten.Image) {
-	sh.options.GeoM.Reset()
-	sh.options.GeoM.Translate(sh.x, sh.y)
-	screen.DrawImage(sh.image, sh.options)
-}
-
-func (sh *Ship) update() {
-	if ebiten.IsKeyPressed(ebiten.KeyArrowRight) && (sh.x+sh.width()) < ScreenWidth {
-		sh.x += sh.speedX
+func (s *Ship) update(world *World) {
+	if ebiten.IsKeyPressed(ebiten.KeyArrowRight) {
+		s.rect.moveX(s.speedX)
+		if s.rect.right() > world.rect.right() {
+			s.rect.setRight(world.rect.right())
+		}
 	}
-	if ebiten.IsKeyPressed(ebiten.KeyArrowLeft) && sh.x > 0 {
-		sh.x -= sh.speedX
+	if ebiten.IsKeyPressed(ebiten.KeyArrowLeft) {
+		s.rect.moveX(-s.speedX)
+		if s.rect.left() < world.rect.left() {
+			s.rect.setLeft(world.rect.left())
+		}
 	}
+	if inpututil.IsKeyJustPressed(ebiten.KeySpace) {
+		s.fire(world)
+	}
+}
+
+func (s *Ship) fire(world *World) {
+	b := world.bullets.newBullet()
+	b.rect.setCenterX(s.rect.centerX())
+	b.rect.setBottom(s.rect.top())
 }
