@@ -10,6 +10,7 @@ type Bullet struct {
 	options *ebiten.DrawImageOptions
 	speedY  float64
 	visible bool
+	radius  float64
 }
 
 func newBullet(res *Res) *Bullet {
@@ -19,6 +20,7 @@ func newBullet(res *Res) *Bullet {
 	b.speedY = -8
 	b.visible = true
 	b.rect = newRectFromImage(b.image)
+	b.radius = b.rect.w / 2
 	return b
 }
 
@@ -38,5 +40,12 @@ func (b *Bullet) update(world *World) {
 	b.rect.moveY(b.speedY)
 	if b.rect.bottom() < world.rect.top() {
 		b.visible = false
+	}
+
+	for i := range world.meteors.items {
+		if world.meteors.items[i].collideCircle(b.rect.centerX(), b.rect.centerY(), b.radius) {
+			b.visible = false
+			world.meteors.items[i].reset(world)
+		}
 	}
 }

@@ -22,10 +22,13 @@ func newWorld(res *Res) *World {
 	return w
 }
 
-func (w *World) update() {
-	w.ship.update(w)
+func (w *World) update() error {
+	if err := w.ship.update(w); err != nil {
+		return err
+	}
 	w.bullets.update(w)
 	w.meteors.update(w)
+	return nil
 }
 
 func (w *World) draw(screen *ebiten.Image) {

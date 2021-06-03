@@ -22,8 +22,7 @@ func NewGame() *Game {
 }
 
 func (g *Game) Update() error {
-	g.world.update()
-	return nil
+	return g.world.update()
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
