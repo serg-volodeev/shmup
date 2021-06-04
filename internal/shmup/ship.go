@@ -6,10 +6,11 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	// "github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
+	"github.com/serg-volodeev/shmup/internal/shape"
 )
 
 type Ship struct {
-	rect    *Rect
+	rect    *shape.Rect
 	image   *ebiten.Image
 	options *ebiten.DrawImageOptions
 	speedX  float64
@@ -22,17 +23,17 @@ func newShip(res *Res, world *World) *Ship {
 	s.options = &ebiten.DrawImageOptions{}
 	s.speedX = 4
 
-	s.rect = newRectFromImage(s.image)
-	s.rect.setCenterX(world.rect.centerX())
-	s.rect.setBottom(world.rect.bottom() - 10)
+	s.rect = shape.NewRectFromImage(s.image)
+	s.rect.SetCenterX(world.rect.CenterX())
+	s.rect.SetBottom(world.rect.Bottom() - 10)
 
-	s.radius = s.rect.h/2 - 2
+	s.radius = s.rect.Height()/2 - 2
 	return s
 }
 
 func (s *Ship) draw(screen *ebiten.Image) {
 	s.options.GeoM.Reset()
-	s.options.GeoM.Translate(s.rect.x, s.rect.y)
+	s.options.GeoM.Translate(s.rect.Left(), s.rect.Top())
 	screen.DrawImage(s.image, s.options)
 
 	// x := s.rect.centerX() - s.radius
@@ -42,21 +43,21 @@ func (s *Ship) draw(screen *ebiten.Image) {
 
 func (s *Ship) update(world *World) error {
 	if ebiten.IsKeyPressed(ebiten.KeyArrowRight) {
-		s.rect.moveX(s.speedX)
-		if s.rect.right() > world.rect.right() {
-			s.rect.setRight(world.rect.right())
+		s.rect.MoveX(s.speedX)
+		if s.rect.Right() > world.rect.Right() {
+			s.rect.SetRight(world.rect.Right())
 		}
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyArrowLeft) {
-		s.rect.moveX(-s.speedX)
-		if s.rect.left() < world.rect.left() {
-			s.rect.setLeft(world.rect.left())
+		s.rect.MoveX(-s.speedX)
+		if s.rect.Left() < world.rect.Left() {
+			s.rect.SetLeft(world.rect.Left())
 		}
 	}
 	if inpututil.IsKeyJustPressed(ebiten.KeySpace) {
 		s.fire(world)
 	}
-	if world.meteors.collideCircle(s.rect.centerX(), s.rect.centerY(), s.radius) {
+	if world.meteors.collideCircle(s.rect.CenterX(), s.rect.CenterY(), s.radius) {
 		return fmt.Errorf("collide meteor")
 	}
 	return nil
@@ -64,6 +65,6 @@ func (s *Ship) update(world *World) error {
 
 func (s *Ship) fire(world *World) {
 	b := world.bullets.newBullet()
-	b.rect.setCenterX(s.rect.centerX())
-	b.rect.setBottom(s.rect.top())
+	b.rect.SetCenterX(s.rect.CenterX())
+	b.rect.SetBottom(s.rect.Top())
 }

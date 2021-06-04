@@ -6,10 +6,11 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	// "github.com/hajimehoshi/ebiten/v2/ebitenutil"
+	"github.com/serg-volodeev/shmup/internal/shape"
 )
 
 type Meteor struct {
-	rect     *Rect
+	rect     *shape.Rect
 	image    *ebiten.Image
 	options  *ebiten.DrawImageOptions
 	speedX   float64
@@ -28,15 +29,15 @@ func newMeteor(res *Res, world *World) *Meteor {
 	m := &Meteor{}
 	m.image = res.images[imgName]
 	m.options = &ebiten.DrawImageOptions{}
-	m.rect = newRectFromImage(m.image)
-	m.radius = m.rect.h/2 - 2
+	m.rect = shape.NewRectFromImage(m.image)
+	m.radius = m.rect.Height()/2 - 2
 	m.reset(world)
 	return m
 }
 
 func (m *Meteor) reset(world *World) {
-	m.rect.x = randRange(0, int32(world.rect.right())-int32(m.rect.w))
-	m.rect.y = randRange(-100, -40)
+	m.rect.SetLeft(randRange(0, int32(world.rect.Right())-int32(m.rect.Width())))
+	m.rect.SetTop(randRange(-100, -40))
 	m.speedY = randRange(1, 8)
 	m.speedX = randRange(-3, 3)
 	m.rotAngle = 0
@@ -48,7 +49,7 @@ func (m *Meteor) draw(screen *ebiten.Image) {
 	m.options.GeoM.Reset()
 	m.options.GeoM.Translate(-float64(w)/2, -float64(h)/2)
 	m.options.GeoM.Rotate(m.rotAngle)
-	m.options.GeoM.Translate(m.rect.centerX(), m.rect.centerY())
+	m.options.GeoM.Translate(m.rect.CenterX(), m.rect.CenterY())
 	screen.DrawImage(m.image, m.options)
 
 	// x := m.rect.centerX() - m.radius
@@ -58,15 +59,15 @@ func (m *Meteor) draw(screen *ebiten.Image) {
 }
 
 func (m *Meteor) update(world *World) {
-	m.rect.moveY(m.speedY)
-	m.rect.moveX(m.speedX)
+	m.rect.MoveY(m.speedY)
+	m.rect.MoveX(m.speedX)
 
 	m.rotAngle += m.rotSpeed
 	if m.rotAngle > 360 || m.rotAngle < -360 {
 		m.rotAngle = 0
 	}
 
-	if m.rect.top() > world.rect.bottom()+100 {
+	if m.rect.Top() > world.rect.Bottom()+100 {
 		m.reset(world)
 	}
 }
@@ -76,7 +77,7 @@ func square(n float64) float64 {
 }
 
 func (m *Meteor) collideCircle(x, y, radius float64) bool {
-	mx := m.rect.centerX()
-	my := m.rect.centerY()
+	mx := m.rect.CenterX()
+	my := m.rect.CenterY()
 	return square(mx-x)+square(my-y) < square(m.radius+radius)
 }

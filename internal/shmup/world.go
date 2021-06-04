@@ -2,10 +2,11 @@ package shmup
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/serg-volodeev/shmup/internal/shape"
 )
 
 type World struct {
-	rect    *Rect
+	rect    *shape.Rect
 	space   *Space
 	ship    *Ship
 	bullets *Bullets
@@ -14,7 +15,7 @@ type World struct {
 
 func newWorld(res *Res) *World {
 	w := &World{}
-	w.rect = newRect(0, 0, ScreenWidth, ScreenHeight)
+	w.rect = shape.NewRect(0, 0, ScreenWidth, ScreenHeight)
 	w.space = newSpace(res)
 	w.ship = newShip(res, w)
 	w.bullets = newBullets(res)
