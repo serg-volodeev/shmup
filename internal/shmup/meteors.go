@@ -2,7 +2,6 @@ package shmup
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/serg-volodeev/shmup/internal/shape"
 )
 
 type Meteors struct {
@@ -19,9 +18,9 @@ func newMeteors(g *Game) *Meteors {
 	return m
 }
 
-func (m *Meteors) update(g *Game) {
+func (m *Meteors) update() {
 	for i := range m.items {
-		m.items[i].update(g)
+		m.items[i].update()
 	}
 }
 
@@ -31,9 +30,19 @@ func (m *Meteors) draw(screen *ebiten.Image) {
 	}
 }
 
-func (m *Meteors) collideCircle(circle *shape.Circle) bool {
+func (m *Meteors) collideBullet(b *Bullet) bool {
 	for i := range m.items {
-		if m.items[i].collideCircle(circle) {
+		if m.items[i].collideCircle(b.circle) {
+			m.items[i].reset()
+			return true
+		}
+	}
+	return false
+}
+
+func (m *Meteors) collideShip(s *Ship) bool {
+	for i := range m.items {
+		if m.items[i].collideCircle(s.circle) {
 			return true
 		}
 	}

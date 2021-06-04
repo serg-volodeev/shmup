@@ -6,6 +6,7 @@ import (
 )
 
 type Bullet struct {
+	game    *Game
 	rect    *shape.Rect
 	circle  *shape.Circle
 	image   *ebiten.Image
@@ -16,6 +17,7 @@ type Bullet struct {
 
 func newBullet(g *Game) *Bullet {
 	b := &Bullet{}
+	b.game = g
 	b.image = g.res.images["bullet"]
 	b.options = &ebiten.DrawImageOptions{}
 	b.speedY = -8
@@ -34,20 +36,16 @@ func (b *Bullet) draw(screen *ebiten.Image) {
 	screen.DrawImage(b.image, b.options)
 }
 
-func (b *Bullet) update(g *Game) {
+func (b *Bullet) update() {
 	if !b.visible {
 		return
 	}
 	b.rect.MoveY(b.speedY)
 	b.circle.SetCenter(b.rect.CenterX(), b.rect.CenterY())
-	if b.rect.Bottom() < g.rect.Top() {
+	if b.rect.Bottom() < b.game.rect.Top() {
 		b.visible = false
 	}
-
-	for i := range g.meteors.items {
-		if g.meteors.items[i].collideCircle(b.circle) {
-			b.visible = false
-			g.meteors.items[i].reset(g)
-		}
+	if b.game.meteors.collideBullet(b) {
+		b.visible = false
 	}
 }

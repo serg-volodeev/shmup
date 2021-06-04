@@ -32,9 +32,9 @@ func NewGame() *Game {
 }
 
 func (g *Game) Update() error {
-	g.bullets.update(g)
-	g.meteors.update(g)
-	return g.ship.update(g)
+	g.bullets.update()
+	g.meteors.update()
+	return g.ship.update()
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {

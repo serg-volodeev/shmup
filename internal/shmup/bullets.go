@@ -16,9 +16,9 @@ func newBullets(g *Game) *Bullets {
 	return b
 }
 
-func (b *Bullets) update(g *Game) {
+func (b *Bullets) update() {
 	for i := range b.items {
-		b.items[i].update(g)
+		b.items[i].update()
 	}
 }
 

@@ -10,6 +10,7 @@ import (
 )
 
 type Meteor struct {
+	game     *Game
 	rect     *shape.Rect
 	circle   *shape.Circle
 	image    *ebiten.Image
@@ -27,16 +28,17 @@ func randRange(min, max int32) float64 {
 func newMeteor(g *Game) *Meteor {
 	imgName := fmt.Sprintf("meteor%d", int(randRange(1, 4)))
 	m := &Meteor{}
+	m.game = g
 	m.image = g.res.images[imgName]
 	m.options = &ebiten.DrawImageOptions{}
 	m.rect = shape.NewRectFromImage(m.image)
 	m.circle = shape.NewCircle(m.rect.CenterX(), m.rect.CenterY(), m.rect.Height()/2-2)
-	m.reset(g)
+	m.reset()
 	return m
 }
 
-func (m *Meteor) reset(g *Game) {
-	m.rect.SetLeft(randRange(0, int32(g.rect.Right())-int32(m.rect.Width())))
+func (m *Meteor) reset() {
+	m.rect.SetLeft(randRange(0, int32(m.game.rect.Right())-int32(m.rect.Width())))
 	m.rect.SetTop(randRange(-100, -40))
 	m.circle.SetCenter(m.rect.CenterX(), m.rect.CenterY())
 	m.speedY = randRange(1, 8)
@@ -59,7 +61,7 @@ func (m *Meteor) draw(screen *ebiten.Image) {
 
 }
 
-func (m *Meteor) update(g *Game) {
+func (m *Meteor) update() {
 	m.rect.Move(m.speedX, m.speedY)
 	m.circle.SetCenter(m.rect.CenterX(), m.rect.CenterY())
 
@@ -68,8 +70,8 @@ func (m *Meteor) update(g *Game) {
 		m.rotAngle = 0
 	}
 
-	if m.rect.Top() > g.rect.Bottom()+100 {
-		m.reset(g)
+	if m.rect.Top() > m.game.rect.Bottom()+100 {
+		m.reset()
 	}
 }
 

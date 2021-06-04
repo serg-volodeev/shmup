@@ -10,6 +10,7 @@ import (
 )
 
 type Ship struct {
+	game    *Game
 	rect    *shape.Rect
 	circle  *shape.Circle
 	image   *ebiten.Image
@@ -19,6 +20,7 @@ type Ship struct {
 
 func newShip(g *Game) *Ship {
 	s := &Ship{}
+	s.game = g
 	s.image = g.res.images["ship"]
 	s.options = &ebiten.DrawImageOptions{}
 	s.speedX = 4
@@ -41,35 +43,35 @@ func (s *Ship) draw(screen *ebiten.Image) {
 	// ebitenutil.DrawRect(screen, x, y, s.radius*2, s.radius*2, color.White)
 }
 
-func (s *Ship) update(g *Game) error {
+func (s *Ship) update() error {
 	if ebiten.IsKeyPressed(ebiten.KeyArrowRight) {
-		s.move(s.speedX, g)
+		s.move(s.speedX)
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyArrowLeft) {
-		s.move(-s.speedX, g)
+		s.move(-s.speedX)
 	}
 	if inpututil.IsKeyJustPressed(ebiten.KeySpace) {
-		s.fire(g)
+		s.fire()
 	}
-	if g.meteors.collideCircle(s.circle) {
+	if s.game.meteors.collideShip(s) {
 		return fmt.Errorf("collide meteor")
 	}
 	return nil
 }
 
-func (s *Ship) move(dx float64, g *Game) {
+func (s *Ship) move(dx float64) {
 	s.rect.MoveX(dx)
-	if s.rect.Right() > g.rect.Right() {
-		s.rect.SetRight(g.rect.Right())
+	if s.rect.Right() > s.game.rect.Right() {
+		s.rect.SetRight(s.game.rect.Right())
 	}
-	if s.rect.Left() < g.rect.Left() {
-		s.rect.SetLeft(g.rect.Left())
+	if s.rect.Left() < s.game.rect.Left() {
+		s.rect.SetLeft(s.game.rect.Left())
 	}
 	s.circle.SetCenter(s.rect.CenterX(), s.rect.CenterY())
 }
 
-func (s *Ship) fire(g *Game) {
-	b := g.bullets.newBullet()
+func (s *Ship) fire() {
+	b := s.game.bullets.newBullet()
 	b.rect.SetCenterX(s.rect.CenterX())
 	b.rect.SetBottom(s.rect.Top())
 }
