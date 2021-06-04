@@ -24,19 +24,19 @@ func randRange(min, max int32) float64 {
 	return float64(rand.Int31n(max-min) + min)
 }
 
-func newMeteor(res *Res, world *World) *Meteor {
+func newMeteor(g *Game) *Meteor {
 	imgName := fmt.Sprintf("meteor%d", int(randRange(1, 4)))
 	m := &Meteor{}
-	m.image = res.images[imgName]
+	m.image = g.res.images[imgName]
 	m.options = &ebiten.DrawImageOptions{}
 	m.rect = shape.NewRectFromImage(m.image)
 	m.radius = m.rect.Height()/2 - 2
-	m.reset(world)
+	m.reset(g)
 	return m
 }
 
-func (m *Meteor) reset(world *World) {
-	m.rect.SetLeft(randRange(0, int32(world.rect.Right())-int32(m.rect.Width())))
+func (m *Meteor) reset(g *Game) {
+	m.rect.SetLeft(randRange(0, int32(g.rect.Right())-int32(m.rect.Width())))
 	m.rect.SetTop(randRange(-100, -40))
 	m.speedY = randRange(1, 8)
 	m.speedX = randRange(-3, 3)
@@ -58,7 +58,7 @@ func (m *Meteor) draw(screen *ebiten.Image) {
 
 }
 
-func (m *Meteor) update(world *World) {
+func (m *Meteor) update(g *Game) {
 	m.rect.MoveY(m.speedY)
 	m.rect.MoveX(m.speedX)
 
@@ -67,8 +67,8 @@ func (m *Meteor) update(world *World) {
 		m.rotAngle = 0
 	}
 
-	if m.rect.Top() > world.rect.Bottom()+100 {
-		m.reset(world)
+	if m.rect.Top() > g.rect.Bottom()+100 {
+		m.reset(g)
 	}
 }
 

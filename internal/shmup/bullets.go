@@ -5,20 +5,20 @@ import (
 )
 
 type Bullets struct {
-	res   *Res
+	game  *Game
 	items []*Bullet
 }
 
-func newBullets(res *Res) *Bullets {
+func newBullets(g *Game) *Bullets {
 	b := &Bullets{}
-	b.res = res
+	b.game = g
 	b.items = make([]*Bullet, 0, 20)
 	return b
 }
 
-func (b *Bullets) update(world *World) {
+func (b *Bullets) update(g *Game) {
 	for i := range b.items {
-		b.items[i].update(world)
+		b.items[i].update(g)
 	}
 }
 
@@ -36,7 +36,7 @@ func (b *Bullets) newBullet() *Bullet {
 		}
 	}
 
-	item := newBullet(b.res)
+	item := newBullet(b.game)
 	b.items = append(b.items, item)
 	return item
 }

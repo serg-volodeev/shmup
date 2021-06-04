@@ -14,9 +14,9 @@ type Bullet struct {
 	radius  float64
 }
 
-func newBullet(res *Res) *Bullet {
+func newBullet(g *Game) *Bullet {
 	b := &Bullet{}
-	b.image = res.images["bullet"]
+	b.image = g.res.images["bullet"]
 	b.options = &ebiten.DrawImageOptions{}
 	b.speedY = -8
 	b.visible = true
@@ -34,19 +34,19 @@ func (b *Bullet) draw(screen *ebiten.Image) {
 	screen.DrawImage(b.image, b.options)
 }
 
-func (b *Bullet) update(world *World) {
+func (b *Bullet) update(g *Game) {
 	if !b.visible {
 		return
 	}
 	b.rect.MoveY(b.speedY)
-	if b.rect.Bottom() < world.rect.Top() {
+	if b.rect.Bottom() < g.rect.Top() {
 		b.visible = false
 	}
 
-	for i := range world.meteors.items {
-		if world.meteors.items[i].collideCircle(b.rect.CenterX(), b.rect.CenterY(), b.radius) {
+	for i := range g.meteors.items {
+		if g.meteors.items[i].collideCircle(b.rect.CenterX(), b.rect.CenterY(), b.radius) {
 			b.visible = false
-			world.meteors.items[i].reset(world)
+			g.meteors.items[i].reset(g)
 		}
 	}
 }

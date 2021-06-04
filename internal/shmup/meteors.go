@@ -8,19 +8,19 @@ type Meteors struct {
 	items []*Meteor
 }
 
-func newMeteors(res *Res, world *World) *Meteors {
+func newMeteors(g *Game) *Meteors {
 	count := 8
 	m := &Meteors{}
 	m.items = make([]*Meteor, count)
 	for i := 0; i < count; i++ {
-		m.items[i] = newMeteor(res, world)
+		m.items[i] = newMeteor(g)
 	}
 	return m
 }
 
-func (m *Meteors) update(world *World) {
+func (m *Meteors) update(g *Game) {
 	for i := range m.items {
-		m.items[i].update(world)
+		m.items[i].update(g)
 	}
 }
 

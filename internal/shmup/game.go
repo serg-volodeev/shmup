@@ -2,6 +2,7 @@ package shmup
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/serg-volodeev/shmup/internal/shape"
 )
 
 const (
@@ -11,22 +12,36 @@ const (
 )
 
 type Game struct {
-	world *World
+	rect    *shape.Rect
+	res     *Res
+	space   *Space
+	ship    *Ship
+	bullets *Bullets
+	meteors *Meteors
 }
 
 func NewGame() *Game {
-	res := loadRes()
 	g := &Game{}
-	g.world = newWorld(res)
+	g.res = loadRes()
+	g.rect = shape.NewRect(0, 0, ScreenWidth, ScreenHeight)
+	g.space = newSpace(g)
+	g.ship = newShip(g)
+	g.bullets = newBullets(g)
+	g.meteors = newMeteors(g)
 	return g
 }
 
 func (g *Game) Update() error {
-	return g.world.update()
+	g.bullets.update(g)
+	g.meteors.update(g)
+	return g.ship.update(g)
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
-	g.world.draw(screen)
+	g.space.draw(screen)
+	g.ship.draw(screen)
+	g.bullets.draw(screen)
+	g.meteors.draw(screen)
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {

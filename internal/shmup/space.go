@@ -9,9 +9,9 @@ type Space struct {
 	options *ebiten.DrawImageOptions
 }
 
-func newSpace(res *Res) *Space {
+func newSpace(g *Game) *Space {
 	s := &Space{}
-	s.image = res.images["space"]
+	s.image = g.res.images["space"]
 	s.options = &ebiten.DrawImageOptions{}
 	return s
 }
