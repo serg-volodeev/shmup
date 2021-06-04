@@ -7,11 +7,11 @@ import (
 
 type Bullet struct {
 	rect    *shape.Rect
+	circle  *shape.Circle
 	image   *ebiten.Image
 	options *ebiten.DrawImageOptions
 	speedY  float64
 	visible bool
-	radius  float64
 }
 
 func newBullet(g *Game) *Bullet {
@@ -21,7 +21,7 @@ func newBullet(g *Game) *Bullet {
 	b.speedY = -8
 	b.visible = true
 	b.rect = shape.NewRectFromImage(b.image)
-	b.radius = b.rect.Width() / 2
+	b.circle = shape.NewCircle(b.rect.CenterX(), b.rect.CenterY(), b.rect.Width()/2)
 	return b
 }
 
@@ -39,12 +39,13 @@ func (b *Bullet) update(g *Game) {
 		return
 	}
 	b.rect.MoveY(b.speedY)
+	b.circle.SetCenter(b.rect.CenterX(), b.rect.CenterY())
 	if b.rect.Bottom() < g.rect.Top() {
 		b.visible = false
 	}
 
 	for i := range g.meteors.items {
-		if g.meteors.items[i].collideCircle(b.rect.CenterX(), b.rect.CenterY(), b.radius) {
+		if g.meteors.items[i].collideCircle(b.circle) {
 			b.visible = false
 			g.meteors.items[i].reset(g)
 		}

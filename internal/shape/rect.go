@@ -1,7 +1,7 @@
 package shape
 
 import (
-	"github.com/hajimehoshi/ebiten/v2"
+	"image"
 )
 
 type Rect struct {
@@ -13,8 +13,8 @@ func NewRect(x, y, w, h float64) *Rect {
 	return &Rect{x: x, y: y, w: w, h: h}
 }
 
-func NewRectFromImage(image *ebiten.Image) *Rect {
-	return NewRect(0, 0, float64(image.Bounds().Dx()), float64(image.Bounds().Dy()))
+func NewRectFromImage(img image.Image) *Rect {
+	return NewRect(0, 0, float64(img.Bounds().Dx()), float64(img.Bounds().Dy()))
 }
 
 func (r *Rect) Height() float64 {
@@ -78,5 +78,10 @@ func (r *Rect) MoveX(dx float64) {
 }
 
 func (r *Rect) MoveY(dy float64) {
+	r.y += dy
+}
+
+func (r *Rect) Move(dx, dy float64) {
+	r.x += dx
 	r.y += dy
 }

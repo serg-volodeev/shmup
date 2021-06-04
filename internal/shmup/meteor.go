@@ -11,13 +11,13 @@ import (
 
 type Meteor struct {
 	rect     *shape.Rect
+	circle   *shape.Circle
 	image    *ebiten.Image
 	options  *ebiten.DrawImageOptions
 	speedX   float64
 	speedY   float64
 	rotAngle float64
 	rotSpeed float64
-	radius   float64
 }
 
 func randRange(min, max int32) float64 {
@@ -30,7 +30,7 @@ func newMeteor(g *Game) *Meteor {
 	m.image = g.res.images[imgName]
 	m.options = &ebiten.DrawImageOptions{}
 	m.rect = shape.NewRectFromImage(m.image)
-	m.radius = m.rect.Height()/2 - 2
+	m.circle = shape.NewCircle(m.rect.CenterX(), m.rect.CenterY(), m.rect.Height()/2-2)
 	m.reset(g)
 	return m
 }
@@ -38,6 +38,7 @@ func newMeteor(g *Game) *Meteor {
 func (m *Meteor) reset(g *Game) {
 	m.rect.SetLeft(randRange(0, int32(g.rect.Right())-int32(m.rect.Width())))
 	m.rect.SetTop(randRange(-100, -40))
+	m.circle.SetCenter(m.rect.CenterX(), m.rect.CenterY())
 	m.speedY = randRange(1, 8)
 	m.speedX = randRange(-3, 3)
 	m.rotAngle = 0
@@ -59,8 +60,8 @@ func (m *Meteor) draw(screen *ebiten.Image) {
 }
 
 func (m *Meteor) update(g *Game) {
-	m.rect.MoveY(m.speedY)
-	m.rect.MoveX(m.speedX)
+	m.rect.Move(m.speedX, m.speedY)
+	m.circle.SetCenter(m.rect.CenterX(), m.rect.CenterY())
 
 	m.rotAngle += m.rotSpeed
 	if m.rotAngle > 360 || m.rotAngle < -360 {
@@ -72,12 +73,6 @@ func (m *Meteor) update(g *Game) {
 	}
 }
 
-func square(n float64) float64 {
-	return n * n
-}
-
-func (m *Meteor) collideCircle(x, y, radius float64) bool {
-	mx := m.rect.CenterX()
-	my := m.rect.CenterY()
-	return square(mx-x)+square(my-y) < square(m.radius+radius)
+func (m *Meteor) collideCircle(circle *shape.Circle) bool {
+	return m.circle.CollideCircle(circle)
 }

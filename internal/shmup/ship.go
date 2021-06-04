@@ -11,10 +11,10 @@ import (
 
 type Ship struct {
 	rect    *shape.Rect
+	circle  *shape.Circle
 	image   *ebiten.Image
 	options *ebiten.DrawImageOptions
 	speedX  float64
-	radius  float64
 }
 
 func newShip(g *Game) *Ship {
@@ -27,7 +27,7 @@ func newShip(g *Game) *Ship {
 	s.rect.SetCenterX(g.rect.CenterX())
 	s.rect.SetBottom(g.rect.Bottom() - 10)
 
-	s.radius = s.rect.Height()/2 - 2
+	s.circle = shape.NewCircle(s.rect.CenterX(), s.rect.CenterY(), s.rect.Height()/2-2)
 	return s
 }
 
@@ -43,24 +43,29 @@ func (s *Ship) draw(screen *ebiten.Image) {
 
 func (s *Ship) update(g *Game) error {
 	if ebiten.IsKeyPressed(ebiten.KeyArrowRight) {
-		s.rect.MoveX(s.speedX)
-		if s.rect.Right() > g.rect.Right() {
-			s.rect.SetRight(g.rect.Right())
-		}
+		s.move(s.speedX, g)
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyArrowLeft) {
-		s.rect.MoveX(-s.speedX)
-		if s.rect.Left() < g.rect.Left() {
-			s.rect.SetLeft(g.rect.Left())
-		}
+		s.move(-s.speedX, g)
 	}
 	if inpututil.IsKeyJustPressed(ebiten.KeySpace) {
 		s.fire(g)
 	}
-	if g.meteors.collideCircle(s.rect.CenterX(), s.rect.CenterY(), s.radius) {
+	if g.meteors.collideCircle(s.circle) {
 		return fmt.Errorf("collide meteor")
 	}
 	return nil
+}
+
+func (s *Ship) move(dx float64, g *Game) {
+	s.rect.MoveX(dx)
+	if s.rect.Right() > g.rect.Right() {
+		s.rect.SetRight(g.rect.Right())
+	}
+	if s.rect.Left() < g.rect.Left() {
+		s.rect.SetLeft(g.rect.Left())
+	}
+	s.circle.SetCenter(s.rect.CenterX(), s.rect.CenterY())
 }
 
 func (s *Ship) fire(g *Game) {
