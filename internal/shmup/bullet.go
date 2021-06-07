@@ -18,7 +18,7 @@ type Bullet struct {
 func newBullet(g *Game) *Bullet {
 	b := &Bullet{}
 	b.game = g
-	b.image = g.res.images["bullet"]
+	b.image = g.res.GetImage("bullet")
 	b.options = &ebiten.DrawImageOptions{}
 	b.speedY = -8
 	b.visible = true

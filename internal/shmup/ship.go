@@ -21,7 +21,7 @@ type Ship struct {
 func newShip(g *Game) *Ship {
 	s := &Ship{}
 	s.game = g
-	s.image = g.res.images["ship"]
+	s.image = g.res.GetImage("ship")
 	s.options = &ebiten.DrawImageOptions{}
 	s.speedX = 4
 

@@ -3,6 +3,7 @@ package shmup
 import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/serg-volodeev/shmup/internal/shape"
+	"github.com/serg-volodeev/shmup/internal/shmup/res"
 )
 
 const (
@@ -13,7 +14,7 @@ const (
 
 type Game struct {
 	rect    *shape.Rect
-	res     *Res
+	res     *res.Res
 	space   *Space
 	ship    *Ship
 	bullets *Bullets
@@ -22,7 +23,7 @@ type Game struct {
 
 func NewGame() *Game {
 	g := &Game{}
-	g.res = loadRes()
+	g.res = res.LoadRes()
 	g.rect = shape.NewRect(0, 0, ScreenWidth, ScreenHeight)
 	g.space = newSpace(g)
 	g.ship = newShip(g)

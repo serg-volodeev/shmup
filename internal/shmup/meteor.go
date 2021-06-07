@@ -29,7 +29,7 @@ func newMeteor(g *Game) *Meteor {
 	imgName := fmt.Sprintf("meteor%d", int(randRange(1, 4)))
 	m := &Meteor{}
 	m.game = g
-	m.image = g.res.images[imgName]
+	m.image = g.res.GetImage(imgName)
 	m.options = &ebiten.DrawImageOptions{}
 	m.rect = shape.NewRectFromImage(m.image)
 	m.circle = shape.NewCircle(m.rect.CenterX(), m.rect.CenterY(), m.rect.Height()/2-2)

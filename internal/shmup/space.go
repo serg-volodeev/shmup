@@ -11,7 +11,7 @@ type Space struct {
 
 func newSpace(g *Game) *Space {
 	s := &Space{}
-	s.image = g.res.images["space"]
+	s.image = g.res.GetImage("space")
 	s.options = &ebiten.DrawImageOptions{}
 	return s
 }

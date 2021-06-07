@@ -1,4 +1,4 @@
-package shmup
+package res
 
 import (
 	"image"
@@ -12,7 +12,7 @@ type Res struct {
 	images map[string]*ebiten.Image
 }
 
-func loadRes() *Res {
+func LoadRes() *Res {
 	r := &Res{}
 	r.images = make(map[string]*ebiten.Image)
 	r.images["bullet"] = loadImageFromFile("./assets/images/laserRed16.png")
@@ -23,6 +23,10 @@ func loadRes() *Res {
 	r.images["meteor3"] = loadImageFromFile("./assets/images/meteorBrown_small1.png")
 	r.images["meteor4"] = loadImageFromFile("./assets/images/meteorBrown_tiny1.png")
 	return r
+}
+
+func (r *Res) GetImage(name string) *ebiten.Image {
+	return r.images[name]
 }
 
 func loadImageFromFile(path string) *ebiten.Image {
