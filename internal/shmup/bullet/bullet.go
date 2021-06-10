@@ -1,12 +1,21 @@
-package shmup
+package bullet
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/serg-volodeev/shmup/internal/shape"
+	"github.com/serg-volodeev/shmup/internal/shmup/meteor"
+	"github.com/serg-volodeev/shmup/internal/shmup/res"
 )
 
+type Opts struct {
+	Bounds  *shape.Rect
+	Res     *res.Res
+	Meteors *meteor.Meteors
+}
+
 type Bullet struct {
-	game    *Game
+	bounds  *shape.Rect
+	meteors *meteor.Meteors
 	rect    *shape.Rect
 	circle  *shape.Circle
 	image   *ebiten.Image
@@ -15,10 +24,11 @@ type Bullet struct {
 	visible bool
 }
 
-func newBullet(g *Game) *Bullet {
+func NewBullet(o *Opts) *Bullet {
 	b := &Bullet{}
-	b.game = g
-	b.image = g.res.GetImage("bullet")
+	b.bounds = o.Bounds
+	b.meteors = o.Meteors
+	b.image = o.Res.GetImage("bullet")
 	b.options = &ebiten.DrawImageOptions{}
 	b.speedY = -8
 	b.visible = true
@@ -27,7 +37,7 @@ func newBullet(g *Game) *Bullet {
 	return b
 }
 
-func (b *Bullet) draw(screen *ebiten.Image) {
+func (b *Bullet) Draw(screen *ebiten.Image) {
 	if !b.visible {
 		return
 	}
@@ -36,16 +46,16 @@ func (b *Bullet) draw(screen *ebiten.Image) {
 	screen.DrawImage(b.image, b.options)
 }
 
-func (b *Bullet) update() {
+func (b *Bullet) Update() {
 	if !b.visible {
 		return
 	}
 	b.rect.MoveY(b.speedY)
 	b.circle.SetCenter(b.rect.CenterX(), b.rect.CenterY())
-	if b.rect.Bottom() < b.game.rect.Top() {
+	if b.rect.Bottom() < b.bounds.Top() {
 		b.visible = false
 	}
-	if b.game.meteors.collideBullet(b) {
+	if b.meteors.CollideCircle(b.circle) {
 		b.visible = false
 	}
 }

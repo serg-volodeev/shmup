@@ -2,17 +2,21 @@ package space
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/serg-volodeev/shmup/internal/shmup/game"
+	"github.com/serg-volodeev/shmup/internal/shmup/res"
 )
+
+type Opts struct {
+	Res *res.Res
+}
 
 type Space struct {
 	image   *ebiten.Image
 	options *ebiten.DrawImageOptions
 }
 
-func NewSpace(g game.Game) *Space {
+func NewSpace(o *Opts) *Space {
 	s := &Space{}
-	s.image = g.GetImage("space")
+	s.image = o.Res.GetImage("space")
 	s.options = &ebiten.DrawImageOptions{}
 	return s
 }
