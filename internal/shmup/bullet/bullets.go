@@ -19,13 +19,13 @@ func NewBullets(o *Opts) *Bullets {
 
 func (b *Bullets) Update() {
 	for i := range b.items {
-		b.items[i].Update()
+		b.items[i].update()
 	}
 }
 
 func (b *Bullets) Draw(screen *ebiten.Image) {
 	for i := range b.items {
-		b.items[i].Draw(screen)
+		b.items[i].draw(screen)
 	}
 }
 
@@ -41,7 +41,7 @@ func (b *Bullets) NewBullet(shipRect *shape.Rect) *Bullet {
 	}
 
 	if item == nil {
-		item = NewBullet(b.options)
+		item = newBullet(b.options)
 		b.items = append(b.items, item)
 	}
 

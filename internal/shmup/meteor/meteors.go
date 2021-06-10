@@ -14,50 +14,29 @@ func NewMeteors(o *Opts) *Meteors {
 	m := &Meteors{}
 	m.items = make([]*Meteor, count)
 	for i := 0; i < count; i++ {
-		m.items[i] = NewMeteor(o)
+		m.items[i] = newMeteor(o)
 	}
 	return m
 }
 
 func (m *Meteors) Update() {
 	for i := range m.items {
-		m.items[i].Update()
+		m.items[i].update()
 	}
 }
 
 func (m *Meteors) Draw(screen *ebiten.Image) {
 	for i := range m.items {
-		m.items[i].Draw(screen)
+		m.items[i].draw(screen)
 	}
 }
 
 func (m *Meteors) CollideCircle(c *shape.Circle) bool {
 	for i := range m.items {
-		if m.items[i].CollideCircle(c) {
-			m.items[i].Reset()
-			return true
-		}
-	}
-	return false
-}
-
-/*
-func (m *Meteors) collideBullet(b *Bullet) bool {
-	for i := range m.items {
-		if m.items[i].collideCircle(b.circle) {
+		if m.items[i].collideCircle(c) {
 			m.items[i].reset()
 			return true
 		}
 	}
 	return false
 }
-
-func (m *Meteors) collideShip(s *Ship) bool {
-	for i := range m.items {
-		if m.items[i].collideCircle(s.circle) {
-			return true
-		}
-	}
-	return false
-}
-*/

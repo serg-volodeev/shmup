@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	// "github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/serg-volodeev/shmup/internal/shape"
 	"github.com/serg-volodeev/shmup/internal/shmup/bullet"
@@ -51,10 +50,6 @@ func (s *Ship) Draw(screen *ebiten.Image) {
 	s.options.GeoM.Reset()
 	s.options.GeoM.Translate(s.rect.Left(), s.rect.Top())
 	screen.DrawImage(s.image, s.options)
-
-	// x := s.rect.centerX() - s.radius
-	// y := s.rect.centerY() - s.radius
-	// ebitenutil.DrawRect(screen, x, y, s.radius*2, s.radius*2, color.White)
 }
 
 func (s *Ship) Update() error {
@@ -86,6 +81,4 @@ func (s *Ship) move(dx float64) {
 
 func (s *Ship) fire() {
 	s.bullets.NewBullet(s.rect)
-	// b.SetCenterX(s.rect.CenterX())
-	// b.SetBottom(s.rect.Top())
 }

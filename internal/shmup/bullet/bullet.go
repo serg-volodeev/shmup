@@ -24,7 +24,7 @@ type Bullet struct {
 	visible bool
 }
 
-func NewBullet(o *Opts) *Bullet {
+func newBullet(o *Opts) *Bullet {
 	b := &Bullet{}
 	b.bounds = o.Bounds
 	b.meteors = o.Meteors
@@ -37,7 +37,7 @@ func NewBullet(o *Opts) *Bullet {
 	return b
 }
 
-func (b *Bullet) Draw(screen *ebiten.Image) {
+func (b *Bullet) draw(screen *ebiten.Image) {
 	if !b.visible {
 		return
 	}
@@ -46,7 +46,7 @@ func (b *Bullet) Draw(screen *ebiten.Image) {
 	screen.DrawImage(b.image, b.options)
 }
 
-func (b *Bullet) Update() {
+func (b *Bullet) update() {
 	if !b.visible {
 		return
 	}
