@@ -59,3 +59,8 @@ func (b *Bullet) update() {
 		b.visible = false
 	}
 }
+
+func (b *Bullet) setPos(shipRect *shape.Rect) {
+	b.rect.SetCenterX(shipRect.CenterX())
+	b.rect.SetBottom(shipRect.Top())
+}

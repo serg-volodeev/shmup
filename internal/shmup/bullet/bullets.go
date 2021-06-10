@@ -6,14 +6,14 @@ import (
 )
 
 type Bullets struct {
-	items   []*Bullet
-	options *Opts
+	items []*Bullet
+	opts  *Opts
 }
 
 func NewBullets(o *Opts) *Bullets {
 	b := &Bullets{}
 	b.items = make([]*Bullet, 0, 20)
-	b.options = o
+	b.opts = o
 	return b
 }
 
@@ -29,23 +29,24 @@ func (b *Bullets) Draw(screen *ebiten.Image) {
 	}
 }
 
-func (b *Bullets) NewBullet(shipRect *shape.Rect) *Bullet {
-	var item *Bullet
-
+func (b *Bullets) findFree() *Bullet {
 	for i := range b.items {
 		if !b.items[i].visible {
 			b.items[i].visible = true
-			item = b.items[i]
-			break
+			return b.items[i]
 		}
 	}
+	return nil
+}
+
+func (b *Bullets) NewBullet(shipRect *shape.Rect) *Bullet {
+	item := b.findFree()
 
 	if item == nil {
-		item = newBullet(b.options)
+		item = newBullet(b.opts)
 		b.items = append(b.items, item)
 	}
 
-	item.rect.SetCenterX(shipRect.CenterX())
-	item.rect.SetBottom(shipRect.Top())
+	item.setPos(shipRect)
 	return item
 }
